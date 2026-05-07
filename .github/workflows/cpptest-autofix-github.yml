@@ -1,0 +1,127 @@
+# This is a basic GitHub workflow for running C/C++test Static Analysis with AI Autofix.
+name: C/C++test Static Analysis with AI Autofix
+
+on:
+  # Triggers the workflow on pull request events but only for the master (main) branch.
+  pull_request:
+    branches: [ master, main ]
+
+  # Allows you to run this workflow manually from the Actions tab.
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel.
+jobs:
+  run-cpptest-autofix:
+    name: Analyze project with C/C++test with AI Autofix
+
+    # Specifies required permissions for upload-sarif action
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: write
+      pull-requests: write
+      
+    # Specifies the type of runner that the job will run on.
+    runs-on: self-hosted
+
+    # Steps represent a sequence of tasks that will be executed as part of the job.
+    steps:
+
+    # Checks out your repository under $GITHUB_WORKSPACE, so that your job can access it.
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    # Configures your CMake project. Be sure the compile_commands.json file is created.
+    # - name: Configure project
+    #   run: cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B .build
+
+    # Builds your CMake project. (This step is optional, as it is not required for code analysis).
+    # - name: Build project (optional)
+    #   run: cmake --build .build
+
+    # Builds your Makefile project with C/C++test trace to generate the input file for analysis.
+    - name: Build project
+      run: cpptesttrace make clean all
+
+    # Runs code analysis with C/C++test.
+    - name: Run C/C++test
+      id: run_cpptest
+      # Use the 'run-cpptest-action' GitHub action.
+      uses: parasoft/run-cpptest-action@2
+      # Optional parameters for 'run-cpptest-action'.
+      with:
+        # For CMake-based projects, use a compile_commands.json file as the input for analysis. 
+        # input: .build/compile_commands.json
+        # For Makefile-based projects, use a cpptestscan.bdf file as the input for analysis.
+        input: cpptestscan.bdf
+        testConfig: "builtin://Recommended Rules"
+        compilerConfig: gcc_13-64
+        additionalParams: -fail
+        # Uncomment if you are using C/C++test 2020.2 to generate a SARIF report:
+        # reportFormat: xml,html,custom
+        # additionalParams: '-property report.custom.extension=sarif -property report.custom.xsl.file=${PARASOFT_SARIF_XSL}'
+    
+    # Uploads analysis results in the SARIF format, so that they are displayed as GitHub code scanning alerts.
+    # - name: Upload results (SARIF)
+    #   if: always()
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   with:
+    #     sarif_file: reports/report.sarif
+    
+    # Uploads an archive that includes all report files (.xml, .html, .sarif).
+    - name: Archive reports
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: Static analysis reports
+        path: reports/*.*
+
+    # Runs C/C++test AI Autofix to automatically fix violations and commit the changes to a new branch.
+    - name: Run C/C++test AI Autofix
+      id: run_cpptest_autofix
+      if: always() && steps.run_cpptest.outcome == 'failure'
+      env:
+        CPPTEST_COMMIT_FIXES: 1
+        WORKFLOWS_DIR: ${{ github.workspace }}/.github/workflows
+      run: |
+        set -euo pipefail
+
+        # Note: this requires "-fail" to be passed to run-cpptest-action,
+        # and the "exitCode" output is available since version 2.0.3 of the action.
+        exitCode=${{ steps.run_cpptest.outputs.exitCode }}
+        if [ "$exitCode" -ge 130 ] || [ $((exitCode & 2)) -eq 0 ]; then
+          echo "C/C++test exit code does not indicate violations. No autofix needed."
+          exit 0
+        fi
+
+        # Set-up autofix branch
+        DATE=$(date +'%Y%m%d-%H%M%S')
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          BRANCH_NAME="autofix/pr-${{ github.event.pull_request.number }}/$DATE"
+          ORIGINAL_BRANCH="${{ github.event.pull_request.head.ref }}"
+        else
+          BRANCH_NAME="autofix/${{ github.ref_name }}/$DATE"
+          ORIGINAL_BRANCH="${{ github.ref_name }}"
+        fi
+        git checkout -b "$BRANCH_NAME"
+
+        ORIGINAL_SHA=$(git rev-parse HEAD)
+
+        # Run AI Agent to fix violations and commit changes
+        "$WORKFLOWS_DIR/cpptest-agent-run.sh"
+
+        # Only push and comment if there are new commits
+        if [ "$(git rev-parse HEAD)" != "$ORIGINAL_SHA" ]; then
+          git push -u origin HEAD
+          export GH_TOKEN="${{ github.token }}"
+          BRANCH_URL="${{ github.server_url }}/${{ github.repository }}/tree/$BRANCH_NAME"
+          PR_URL=$(gh pr create --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --title "Autofix: $BRANCH_NAME" --body "Automated C/C++test AI Autofix changes")
+          COMMENT=$(printf 'C/C++test found violations and opened an AI Autofix PR. Please review the changes and merge or cherry-pick as needed.\nBranch: %s\nAutofix PR: %s' "$BRANCH_URL" "$PR_URL")
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
+          else
+            echo "$COMMENT"
+          fi
+        fi

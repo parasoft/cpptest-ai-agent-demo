@@ -1,0 +1,5 @@
+.build/
+.cpptest/
+obj/
+reports/
+*.bdf

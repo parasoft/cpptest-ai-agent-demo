@@ -1,0 +1,10 @@
+{
+	"servers": {
+		"cpptest-std-mcp": {
+			"type": "stdio",
+			"command": "/opt/parasoft/cpptest/integration/mcp/cpptestmcp",
+			"args": []
+		}
+	},
+	"inputs": []
+}
