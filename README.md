@@ -1,1 +1,1 @@
-# cpptest-ai-agent-demo
+# C/C++test AI Agent Skills Demo
