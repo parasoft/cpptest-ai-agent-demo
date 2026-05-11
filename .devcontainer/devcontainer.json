@@ -1,0 +1,9 @@
+{
+    "image": "cppnexus.parasoft.com.pl:9090/cpptest-ai-dev:2026.1.0.20260409",
+    "runArgs": [ "--rm" ],
+    "customizations": {
+        "vscode": {
+            "extensions": ["ms-vscode.cpptools", "github.copilot-chat"]
+        }
+    }
+}
