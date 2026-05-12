@@ -35,8 +35,9 @@ The CI/CD pipeline requires a GitHub self-hosted runner configured and connected
 
 ### 1. Preparation
 1. Fork or copy this repository.
-2. Set up and connect a GitHub self-hosted runner — see [Prerequisites](#prerequisites) above.
-3. Clone the repository to your local machine.
+2. Set up and connect a GitHub self-hosted runner: **Settings > Actions > Runners**. See also [Prerequisites](#prerequisites) above.
+3. Enable the following option in your repository: **Settings > Actions > General > Allow GitHub Actions to create and approve pull requests**. This option allows GitHub Actions to create pull requests automatically.
+4. Clone the repository to your local machine.
 
 ### 2. Introducing a Code Change
 1. Create a `feature` branch in the local repository.

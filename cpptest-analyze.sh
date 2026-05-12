@@ -11,7 +11,7 @@
 cpptesttrace make clean all
 
 # Analyze
-cpptestcli -compiler gcc_13-64 -config "builtin://Recommended Rules" -module . -input cpptestscan.bdf
+cpptestcli -quiet -compiler gcc_13-64 -config "builtin://Recommended Rules" -module . -input cpptestscan.bdf
 
 # == CMake project ==
 
@@ -22,4 +22,4 @@ cpptestcli -compiler gcc_13-64 -config "builtin://Recommended Rules" -module . -
 # cmake --build .build
 
 # Analyze
-# cpptestcli -compiler gcc_13-64 -config "builtin://Recommended Rules" -module . -input .build/compile_commands.json
+# cpptestcli -quiet -compiler gcc_13-64 -config "builtin://Recommended Rules" -module . -input .build/compile_commands.json
