@@ -81,7 +81,7 @@ jobs:
     # Runs C/C++test AI Autofix to automatically fix violations and commit the changes to a new branch.
     - name: Run C/C++test AI Autofix
       id: run_cpptest_autofix
-      if: always() && steps.run_cpptest.outcome == 'failure'
+      if: always() && steps.run_cpptest.outputs.exitCode == '2' # Only run autofix if there are violations (exit code 2)
       env:
         CPPTEST_COMMIT_FIXES: 1
         GH_TOKEN: ${{ github.token }}
