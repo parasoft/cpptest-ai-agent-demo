@@ -81,12 +81,14 @@ jobs:
     - name: Check for violations
       id: check_violations
       if: always()
-      run: echo "exitCode=${{ steps.run_cpptest.outputs.exitCode }}"
+      run: |
+        echo "exitCode=${{ steps.run_cpptest.outputs.exitCode }}"
+        echo "hasViolations=${{ steps.run_cpptest.outputs.hasViolations }}"
 
     # Runs C/C++test AI Autofix to automatically fix violations and commit the changes to a new branch.
     - name: Run C/C++test AI Autofix
       id: run_cpptest_autofix
-      if: always() && steps.run_cpptest.outputs.exitCode == '2' # Only run autofix if there are violations (exit code 2)
+      if: always() && steps.run_cpptest.outputs.hasViolations == 'true' # Only run autofix if there are violations (bit 2 set in exit code)
       env:
         CPPTEST_COMMIT_FIXES: 1
         GH_TOKEN: ${{ github.token }}
