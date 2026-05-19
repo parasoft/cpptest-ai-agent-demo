@@ -84,7 +84,6 @@ jobs:
       if: always() && steps.run_cpptest.outcome == 'failure'
       env:
         CPPTEST_COMMIT_FIXES: 1
-        GH_TOKEN: ${{ github.token }}
         WORKFLOWS_DIR: ${{ github.workspace }}/.github/workflows
       run: |
         # Set-up autofix branch
@@ -98,6 +97,7 @@ jobs:
         # Only push and comment if there are new commits
         if [ "$(git rev-parse HEAD)" != "$ORIGINAL_SHA" ]; then
           git push -u origin HEAD
+          export GH_TOKEN="${{ github.token }}"
           ORIGINAL_BRANCH="${{ github.event.pull_request.head.ref }}"
           BRANCH_URL="${{ github.server_url }}/${{ github.repository }}/tree/$BRANCH_NAME"
           gh pr create --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --title "Autofix: $BRANCH_NAME" --body "Automated C/C++test AI Autofix changes"
