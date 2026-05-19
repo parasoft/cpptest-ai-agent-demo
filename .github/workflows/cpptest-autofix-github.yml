@@ -49,7 +49,7 @@ jobs:
     - name: Run C/C++test
       id: run_cpptest
       # Use the 'run-cpptest-action' GitHub action.
-      uses: mirage-ctest/run-cpptest-action@2.0.2
+      uses: mirage-ctest/run-cpptest-action@2.0.4
       # Optional parameters for 'run-cpptest-action'.
       with:
         # For CMake-based projects, use a compile_commands.json file as the input for analysis. 
