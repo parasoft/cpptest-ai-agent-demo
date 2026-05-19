@@ -78,6 +78,11 @@ jobs:
         name: Static analysis reports
         path: reports/*.*
 
+    - name: Check for violations
+      id: check_violations
+      if: always()
+      run: echo "exitCode=steps.run_cpptest.outputs.exitCode"
+
     # Runs C/C++test AI Autofix to automatically fix violations and commit the changes to a new branch.
     - name: Run C/C++test AI Autofix
       id: run_cpptest_autofix
