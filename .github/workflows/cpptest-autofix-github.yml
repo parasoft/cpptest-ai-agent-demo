@@ -57,7 +57,7 @@ jobs:
         # For Makefile-based projects, use a cpptestscan.bdf file as the input for analysis.
         input: cpptestscan.bdf
         testConfig: "builtin://Recommended Rules"
-        compilerConfig: gcc_13-64
+        compilerConfig: gcc_14-aarch64
         additionalParams: -fail
         # Uncomment if you are using C/C++test 2020.2 to generate a SARIF report:
         # reportFormat: xml,html,custom
