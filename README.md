@@ -24,6 +24,7 @@ The CI/CD pipeline requires a GitHub self-hosted runner configured and connected
   - The following directories should be on `$PATH` so that `cpptestcli` and `cpptesttrace` are accessible to the pipeline:
     - `/opt/parasoft/cpptest`
     - `/opt/parasoft/cpptest/bin`
+- **GitHub CLI** - installed
 - **AI coding agent** — OpenAI Codex CLI, authorized and ready to use
 - **C/C++ toolchain** — GNU GCC compiler and `make` build tool
 
