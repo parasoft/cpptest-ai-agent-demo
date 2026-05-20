@@ -84,7 +84,6 @@ jobs:
       if: always() && steps.run_cpptest.outputs.hasViolations == 'true' # Only run autofix if there are violations
       env:
         CPPTEST_COMMIT_FIXES: 1
-        GH_TOKEN: ${{ github.token }}
         WORKFLOWS_DIR: ${{ github.workspace }}/.github/workflows
       run: |
         # Set-up autofix branch
@@ -98,11 +97,12 @@ jobs:
         # Only push and comment if there are new commits
         if [ "$(git rev-parse HEAD)" != "$ORIGINAL_SHA" ]; then
           git push -u origin HEAD
+          export GH_TOKEN="${{ github.token }}"
           ORIGINAL_BRANCH="${{ github.event.pull_request.head.ref }}"
           BRANCH_URL="${{ github.server_url }}/${{ github.repository }}/tree/$BRANCH_NAME"
           gh pr create --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --title "Autofix: $BRANCH_NAME" --body "Automated C/C++test AI Autofix changes"
           PR_URL="${{ github.server_url }}/${{ github.repository }}/pull"
           sleep 2
-          PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --state open --limit 1 | head -n 1 | cut -d' ' -f1)
+          PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --state open --limit 1 | cut -f1)
           gh pr comment ${{ github.event.pull_request.number }} --body "C/C++test AI Autofix branch: $BRANCH_URL | Pull request: $PR_URL/$PR_NUMBER"
         fi
