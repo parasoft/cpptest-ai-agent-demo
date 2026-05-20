@@ -94,7 +94,6 @@ Commit changes to the repository using `git commit` command. Be sure to follow t
 - **Always** use 'Autofix' as committer name.
 - Use verbose commit message - list all changes explicitly.
 - The first line of the commit message must be exactly "Autofix RULE-IDENTIFIER" (e.g., "Autofix MISRA-123"), followed by a blank line.
-- Hard-wrap all paragraph lines to a maximum of 72 characters per line. 
 - Separate distinct logical paragraphs with a single blank line. Do not insert blank lines between individual sentences or wrapped lines within the same paragraph.
 
 ### Step 7: Repeat for Next Rule
