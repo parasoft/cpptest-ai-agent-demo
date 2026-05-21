@@ -90,8 +90,10 @@ jobs:
         DATE=$(date +'%Y%m%d-%H%M%S')
         if [ "${{ github.event_name }}" = "pull_request" ]; then
           BRANCH_NAME="autofix/pr-${{ github.event.pull_request.number }}/$DATE"
+          ORIGINAL_BRANCH="${{ github.event.pull_request.head.ref }}"
         else
           BRANCH_NAME="autofix/${{ github.ref_name }}/$DATE"
+          ORIGINAL_BRANCH="${{ github.ref_name }}"
         fi
         git checkout -b "$BRANCH_NAME"
 
@@ -104,7 +106,6 @@ jobs:
         if [ "$(git rev-parse HEAD)" != "$ORIGINAL_SHA" ]; then
           git push -u origin HEAD
           export GH_TOKEN="${{ github.token }}"
-          ORIGINAL_BRANCH="${{ github.event.pull_request.head.ref }}"
           BRANCH_URL="${{ github.server_url }}/${{ github.repository }}/tree/$BRANCH_NAME"
           gh pr create --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --title "Autofix: $BRANCH_NAME" --body "Automated C/C++test AI Autofix changes"
           PR_URL="${{ github.server_url }}/${{ github.repository }}/pull"
