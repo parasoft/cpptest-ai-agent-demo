@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # This script should run the C/C++test static analysis with additional build and verification steps.
 # It should be located in the root of the project. It is intended to be executed by C/C++test skills.
 #
