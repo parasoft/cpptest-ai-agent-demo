@@ -107,9 +107,6 @@ jobs:
           git push -u origin HEAD
           export GH_TOKEN="${{ github.token }}"
           BRANCH_URL="${{ github.server_url }}/${{ github.repository }}/tree/$BRANCH_NAME"
-          gh pr create --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --title "Autofix: $BRANCH_NAME" --body "Automated C/C++test AI Autofix changes"
-          PR_URL="${{ github.server_url }}/${{ github.repository }}/pull"
-          sleep 2
-          PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --state open --limit 1 | cut -f1)
-          gh pr comment ${{ github.event.pull_request.number }} --body "C/C++test AI Autofix branch: $BRANCH_URL | Pull request: $PR_URL/$PR_NUMBER"
+          PR_URL=$(gh pr create --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --title "Autofix: $BRANCH_NAME" --body "Automated C/C++test AI Autofix changes")
+          gh pr comment ${{ github.event.pull_request.number }} --body "C/C++test AI Autofix branch: $BRANCH_URL | Pull request: $PR_URL"
         fi
