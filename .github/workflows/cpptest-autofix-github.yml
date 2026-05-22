@@ -109,7 +109,11 @@ jobs:
           git push -u origin HEAD
           export GH_TOKEN="${{ github.token }}"
           BRANCH_URL="${{ github.server_url }}/${{ github.repository }}/tree/$BRANCH_NAME"
-          PR_URL=$(gh pr create --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --title "Autofix: $BRANCH_NAME" --body "Automated C/C++test AI Autofix changes")
+          PR_BODY=$(sed \
+            -e "s|%GH_RUN_NUMBER%|${{ github.run_number }}|g" \
+            -e "s|%GH_RUN_URL%|${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|g" \
+            < "$WORKFLOWS_DIR/pr-body-template.txt")
+          PR_URL=$(gh pr create --head "$BRANCH_NAME" --base "$ORIGINAL_BRANCH" --title "C/C++test AI Autofix: $BRANCH_NAME" --body "$PR_BODY")
           COMMENT=$(printf 'C/C++test found violations and opened an AI Autofix PR. Please review the changes and merge or cherry-pick as needed.\nBranch: %s\nAutofix PR: %s' "$BRANCH_URL" "$PR_URL")
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
