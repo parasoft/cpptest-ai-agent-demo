@@ -45,20 +45,29 @@ jobs:
     - name: Build project
       run: cpptesttrace make clean all
 
-    # Runs code analysis with C/C++test.
     - name: Run C/C++test
-      id: run_cpptest
-      # Use the 'run-cpptest-action' GitHub action.
       uses: parasoft/run-cpptest-action@2.0.2
-      # Optional parameters for 'run-cpptest-action'.
       with:
+        # C/C++test workspace will be created in '../workspace'.
+        # C/C++test will create a new project based on the provided .bdf file.
+        additionalParams: '-localsettings /mlnode-ps/license.properties
+        # additionalParams: '-localsettings /mlnode-ps/license.properties -localsettings mlnode-ps/report.properties -localsettings /mlnode-ps/compiler.properties'
+        commandLinePattern: '${cpptestcli} -data ../workspace -config "${testConfig}" -report "${reportDir}" -bdf "${input}" ${additionalParams}'
+
+    # Runs code analysis with C/C++test.
+    # - name: Run C/C++test
+      # id: run_cpptest
+      # Use the 'run-cpptest-action' GitHub action.
+      # uses: parasoft/run-cpptest-action@2.0.2
+      # Optional parameters for 'run-cpptest-action'.
+      # with:
         # For CMake-based projects, use a compile_commands.json file as the input for analysis. 
         # input: .build/compile_commands.json
         # For Makefile-based projects, use a cpptestscan.bdf file as the input for analysis.
-        input: cpptestscan.bdf
-        testConfig: "builtin://Recommended Rules"
-        compilerConfig: gcc_13-64
-        additionalParams: -fail
+        # input: cpptestscan.bdf
+        # testConfig: "builtin://Recommended Rules"
+        # compilerConfig: gcc_13-64
+        # additionalParams: -fail
         # Uncomment if you are using C/C++test 2020.2 to generate a SARIF report:
         # reportFormat: xml,html,custom
         # additionalParams: '-property report.custom.extension=sarif -property report.custom.xsl.file=${PARASOFT_SARIF_XSL}'
