@@ -93,8 +93,8 @@ Commit changes to the repository using `git commit` command. Be sure to follow t
 - **Always** use 'autofix@demo' as committer e-mail.
 - **Always** use 'Autofix' as committer name.
 - Use verbose commit message - list all changes explicitly.
-- First line of the commit message should be "Autofix RULE-IDENTIFIER" - for example "Autofix MISRA-123".
-- For multi-line messages, add each line with `-m` option.
+- The first line of the commit message must be exactly "Autofix RULE-IDENTIFIER" (e.g., "Autofix MISRA-123"), followed by a blank line.
+- Separate distinct logical paragraphs with a single blank line. Do not insert blank lines between individual sentences or wrapped lines within the same paragraph.
 
 ### Step 7: Repeat for Next Rule
 
