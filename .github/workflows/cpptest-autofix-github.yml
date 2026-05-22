@@ -49,7 +49,7 @@ jobs:
     - name: Run C/C++test
       id: run_cpptest
       # Use the 'run-cpptest-action' GitHub action.
-      uses: parasoft/run-cpptest-action@2.0.2
+      uses: parasoft/run-cpptest-action@2
       # Optional parameters for 'run-cpptest-action'.
       with:
         # For CMake-based projects, use a compile_commands.json file as the input for analysis. 
@@ -87,6 +87,14 @@ jobs:
         WORKFLOWS_DIR: ${{ github.workspace }}/.github/workflows
       run: |
         set -euo pipefail
+
+        # Note: this requires "-fail" to be passed to run-cpptest-action,
+        # and the "exitCode" output is available since version 2.0.3 of the action.
+        exitCode=${{ steps.run_cpptest.outputs.exitCode }}
+        if [ "$exitCode" -ge 130 ] || [ $((exitCode & 2)) -eq 0 ]; then
+          echo "C/C++test exit code does not indicate violations. No autofix needed."
+          exit 0
+        fi
 
         # Set-up autofix branch
         DATE=$(date +'%Y%m%d-%H%M%S')
