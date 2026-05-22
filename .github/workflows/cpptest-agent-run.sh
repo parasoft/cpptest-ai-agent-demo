@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # This script should run AI Agent for C/C++test Static Analysis with AI Autofix.
 # It is intended to be executed by 'cpptest-autofix-github.yml' but can also be run manually.
 
