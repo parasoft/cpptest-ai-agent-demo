@@ -88,3 +88,30 @@ The repository is structured as follows, highlighting the key files related to C
   Makefile
 ```
 
+## Customizing the AI Agent Skills Demo project to run with C/C++test Professional
+
+This section provides guidance on how to modify the workflow to run with C/C++test Professional.
+
+### Update the Run C/C++test action 
+
+Use `commandLinePattern` parameter to modify the command line for cpptestcli executable. The command line pattern depends on your project and the setup of the workspace. Example:
+
+```yaml
+Example:
+
+```yaml
+- name: Run C/C++test
+  id: run_cpptest
+  uses: parasoft/run-cpptest-action@2.0.2
+  with:
+    additionalParams: '-fail'
+    commandLinePattern: '${cpptestcli} -data ../workspace -config "${testConfig}" -report "${reportDir}" -bdf "${input}" ${additionalParams}'
+```
+
+### Update C/C++test analyze script 
+
+Update the cpptest-analyze.sh script to use the cpptestcli command line that matches your C/C++test Professional setup. Example:
+
+```bash
+cpptestcli -data ../workspace -config "builtin://Recommended Rules" -report "reports" -bdf "cpptestscan.bdf"
+```
