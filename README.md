@@ -52,7 +52,7 @@ Opening a pull request triggers the workflow defined in [.github/workflows/cppte
 1. The project is built.
 2. C/C++test runs static analysis and archives the reports as build artifacts.
 3. If violations are found, the AI Autofix step is triggered:
-   - A new `autofix-<timestamp>` branch is created.
+   - A new `autofix/pr-<number>/<timestamp>` branch is created.
    - The AI agent processes violations rule by rule.
    - Each fix is verified by running [cpptest-analyze.sh](cpptest-analyze.sh).
    - Verified fixes are committed to the `autofix` branch (one commit per rule).
