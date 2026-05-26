@@ -8,7 +8,7 @@ Bank::Bank() : myAccounts()
         
 Bank::~Bank()
 {
-    // NYI: Clean up account list
+    // NYI: Clean up
 }
 
 // Get acount number. Only return valid object if password is correct
