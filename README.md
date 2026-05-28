@@ -31,7 +31,7 @@ The CI/CD pipeline requires a GitHub self-hosted runner configured and connected
 
 > **Note:** If your C/C++test installation path or AI agent setup differs from the defaults, update the configuration in [.github/workflows/cpptest-autofix-github.yml](.github/workflows/cpptest-autofix-github.yml), [.github/workflows/cpptest-agent-run.sh](.github/workflows/cpptest-agent-run.sh), and [cpptest-analyze.sh](cpptest-analyze.sh) accordingly.
 
-> **Tip:** Consider using a Docker container as your GitHub self-hosted runner with C/C++test and the AI agent pre-installed. An example Dockerfile is available in the `devcontainer` folder of the [parasoft/cpptest-ai-agent-skills](https://github.com/parasoft/cpptest-ai-agent-skills) repository.
+> **Tip:** Consider using a Docker container as your GitHub self-hosted runner with C/C++test and the AI agent pre-installed. An example Dockerfile is available in [parasoft/cpptest-ai-agent-skills/devcontainer](https://github.com/parasoft/cpptest-ai-agent-skills/tree/master/devcontainer).
 
 ## Workflow
 
