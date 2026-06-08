@@ -45,7 +45,7 @@ void ATM::makeDeposit(double amount)
 
 void ATM::withdraw(double amount)
 {
-    double bal = myCurrentAccount->deposit(amount * -1.0);
+    double bal = myCurrentAccount->debit(amount);
     myDisplay->showInfoToUser("Updated Balance");
     myDisplay->showBalance(bal);
 }
